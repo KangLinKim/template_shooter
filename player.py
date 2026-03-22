@@ -3,9 +3,7 @@ from model import Model
 
 
 class Player:
-
     def __init__(self, fbx_path):
-
         self.weapon_model = Model(fbx_path)
 
         self.rotation = [0.0, 0.0]
@@ -15,7 +13,6 @@ class Player:
         self.weapon_scale = 1.4
 
     def apply_camera(self):
-
         pitch, yaw = self.rotation
         x, y, z = self.position
 
@@ -28,7 +25,6 @@ class Player:
         self.rotation[1] += amount
 
     def rotate_pitch(self, amount):
-
         self.rotation[0] += amount
 
         if self.rotation[0] > 89:
@@ -38,9 +34,7 @@ class Player:
             self.rotation[0] = -89
 
     def draw_weapon(self):
-
         glPushMatrix()
-
         glLoadIdentity()
 
         glTranslatef(

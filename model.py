@@ -7,9 +7,7 @@ from OpenGL.arrays import vbo
 
 
 class MeshVBO:
-
     def __init__(self, vertices, normals):
-
         self.vertex_count = len(vertices)
 
         self.vbo_vertices = vbo.VBO(
@@ -21,7 +19,6 @@ class MeshVBO:
         )
 
     def draw(self):
-
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_NORMAL_ARRAY)
 
@@ -41,39 +38,36 @@ class MeshVBO:
 
 
 class Model:
-
     def __init__(self, path):
-
         self.meshes = []
 
         file_type = os.path.basename(path)
         if file_type.startswith("SMG"):
             unload_index = 4
+
         elif file_type.startswith("ShotGun"):
             unload_index = None
+
         elif file_type.startswith("Pistol"):
             unload_index = 2
 
         with pyassimp.load(path) as scene:
-
             for mesh_idx, mesh in enumerate(scene.meshes):
-                    
                 if mesh_idx != unload_index:
                     vertices = []
                     normals = []
 
                     for face in mesh.faces:
-
                         if len(face) != 3:
                             continue
 
                         for index in face:
-
                             v = mesh.vertices[index]
                             vertices.append(v)
 
                             if mesh.normals is not None:
                                 normals.append(mesh.normals[index])
+
                             else:
                                 normals.append([0, 1, 0])
 
@@ -82,7 +76,6 @@ class Model:
                     )
 
     def draw(self):
-
         glMaterialfv(GL_FRONT, GL_SPECULAR, [1, 1, 1, 1])
         glMaterialfv(GL_FRONT, GL_SHININESS, 32)
 

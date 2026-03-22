@@ -11,7 +11,6 @@ HEIGHT = 720
 
 
 def init_opengl():
-
     glViewport(0, 0, WIDTH, HEIGHT)
 
     glMatrixMode(GL_PROJECTION)
