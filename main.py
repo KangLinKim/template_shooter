@@ -7,9 +7,6 @@ from OpenGL.GLU import *
 from player import Player
 from constants import *
 
-WIDTH = 1280
-HEIGHT = 720
-
 """
 문제
 1. WIDTH, HEIGHT라는 변수를 생성하고, 각 변수에 1280, 720을 할당해주세요.
@@ -75,7 +72,7 @@ def main():
 
     init_opengl()
 
-    player = Player("assets/player/SMG_H.fbx")
+    player = Player("")
     clock = pygame.time.Clock()
 
     pygame.event.set_grab(True)
