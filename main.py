@@ -23,42 +23,33 @@ MAP_RANGE = 15
 
 default_weapon = "assets/player/Pistol_K.fbx"
 
-
 """
 문제
+1. UIs라는 이름의 list를 생성하고, assets/UI폴더에 저장된 이미지들의 경로를 넣어주세요.
+1.1. 생성과 동시에 넣어주세요.
+1.2. 추가하는 함수를 사용해 하나씩 넣어주세요.
+1.3. for문을 사용해서 UIs에 있는 모든 이미지 경로를 출력해주세요.
 
-1. constants.py에는 WEAPON_POOL이라는 list가 선언되어 있습니다.
-    assets/player 폴더에 있는 파일들을 list를 수정하지 않고 WEAPON_POOL에 추가해주세요.
+2. UIs라는 이름의 Dictionary를 생성하고, 아래의 key와 이미지를 하나의 쌍으로 작성해주세요.
+    - "Heart"
+    - "Ammo"
+    - "Cross"
+2.1. 생성과 동시에 넣어주세요.
+2.2. 추가하는 함수를 사용해 하나씩 넣어주세요.
+2.3. for문을 사용해서 UIs에 있는 모든 key와 value를 출력해주세요.
 
-2. WEAPON_POOL에 있는 무기 중 랜덤으로 하나를 선택해, default_weapon으로 설정해주세요.
+3. 이제 UI를 그려야합니다. 아래의 지시를 따라 ui클래스를 작성해주세요.
+    - ui파일의 UI클래스를 가져와주세요.
+    - ui라는 변수로 UI클래스의 인스턴스를 생성해주세요.
+    - UI클래스의 생성자에는 화면의 너비, 높이, 그리고 UIs에 저장된 이미지 경로들을 넣어주세요.
 
-3. WEAPON_DATA에는 각 무기의 정보가 담긴 dictionary가 선언되어 있습니다.
-    이제 데미지와 쿨타임 정보를 입력해야하는데,
-    각 무기마다 bullet_damage와 fire_rate정보를 원하는대로 추가해주세요.
+    - ui클래스의 생성사는 ui.py에 서술되어 있습니다.
 
-4. 캐릭터를 움직이는 함수를 작성해야합니다.
-    다음의 함수를 완성해주세요.
-    keys에 맞춰 앞방향, 또는 옆방향을 -1, 또는 1로 설정해주세요.
-    앞방향과 옆방향을 동시에 반환해주세요.
-
-def Character_move(keys):
-    앞방향 = 0
-    옆방향 = 0
-
-    if keys[K_w]:
-        pass
-    
-    if keys[K_s]:
-        pass
-    
-    if keys[K_a]:
-        pass
-        
-    if keys[K_d]:
-        pass
-    
-    return
-
+4. UI클래스의 draw함수를 사용해서 화면에 UI를 그려주세요.
+    - draw함수의 매개변수로 플레이어의 체력, 총알 수, 그리고 점수를 넣어주세요.
+    - player의 체력은 player클래스의 health변수로 작성되어 있습니다.
+    - 총알 수는 bullet_manager의 ammo변수로 작성되어 있습니다.
+    - 점수는 100점으로 작성해주세요.
 """
 
 
@@ -99,9 +90,8 @@ def draw_ground():
     size = 20
 
     glBegin(GL_LINES)
+
     for i in range(-size, size):
-
-
         glVertex3f(i, 0, -size)
         glVertex3f(i, 0, size)
 
@@ -110,13 +100,11 @@ def draw_ground():
 
     glEnd()
 
-
     glEnable(GL_LIGHTING)
 
 
 def main():
     pygame.init()
-
 
     pygame.display.set_mode(
         (WIDTH, HEIGHT),
@@ -130,14 +118,6 @@ def main():
     player = Player(default_weapon)
     item_manager = ItemManager()
     bullet_manager = BulletManager(default_weapon)
-    ui = UI(WIDTH, HEIGHT,
-                    "assets/UI/Heart.png",
-                    "assets/UI/Ammo.png",
-                    "assets/UI/Cross.png",)
-
-    player = Player(default_weapon)
-    item_manager = ItemManager()
-    bullet_manager = BulletManager(default_weapon)
 
     clock = pygame.time.Clock()
 
@@ -146,26 +126,8 @@ def main():
 
     last_spawn = time.time()
 
-    last_spawn = time.time()
-
     running = True
     while running:
-        dt = clock.tick(60) / 1000
-
-        now = time.time()
-
-        if now - last_spawn > SPAWN_INTERVAL:
-            weapon = random.choice(WEAPON_POOL)
-
-            x = random.uniform(-MAP_RANGE, MAP_RANGE)
-            z = random.uniform(-MAP_RANGE, MAP_RANGE)
-
-            item_manager.spawn_item(
-                weapon,
-                [x, 0.6, z]
-            )
-
-            last_spawn = now
         dt = clock.tick(60) / 1000
 
         now = time.time()
@@ -199,17 +161,24 @@ def main():
 
                     bullet_manager.shoot(pos, direction)
 
-            if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    pos, direction = player.get_muzzle()
-
-                    bullet_manager.shoot(pos, direction)
-
         keys = pygame.key.get_pressed()
 
         speed = 0.1
 
-        forward, right = Character_move(keys)
+        forward = 0
+        right = 0
+
+        if keys[K_w]:
+            forward += 1
+
+        if keys[K_s]:
+            forward -= 1
+
+        if keys[K_a]:
+            right -= 1
+
+        if keys[K_d]:
+            right += 1
 
         player.move(forward, right, speed)
 
@@ -219,30 +188,16 @@ def main():
         item_manager.update(player, bullet_manager)
         bullet_manager.update(dt)
 
-        item_manager.update(player, bullet_manager)
-        bullet_manager.update(dt)
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
 
         player.apply_camera()
 
-
         draw_ground()
 
         item_manager.draw()
         bullet_manager.draw()
-
-        item_manager.draw()
-        bullet_manager.draw()
         player.draw_weapon()
-
-        ui.draw(
-            player.health,
-            bullet_manager.ammo,
-            100 - bullet_manager.ammo
-        )
-
 
         pygame.display.flip()
 
