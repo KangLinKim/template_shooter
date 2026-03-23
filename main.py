@@ -12,6 +12,7 @@ from constants import *
 
 from item_manager import ItemManager
 from bullet_manager import BulletManager
+from ui import UI
 
 
 WIDTH = 1280
@@ -43,6 +44,9 @@ def init_opengl():
 
     glEnable(GL_COLOR_MATERIAL)
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE)
+    
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     glLightfv(GL_LIGHT0, GL_POSITION, [0, 10, 0, 1])
     glLightfv(GL_LIGHT0, GL_DIFFUSE, [1, 1, 1, 1])
@@ -85,6 +89,10 @@ def main():
     player = Player(default_weapon)
     item_manager = ItemManager()
     bullet_manager = BulletManager(default_weapon)
+    ui = UI(WIDTH, HEIGHT,
+                    "assets/UI/Heart.png",
+                    "assets/UI/Ammo.png",
+                    "assets/UI/Cross.png",)
 
     clock = pygame.time.Clock()
 
@@ -165,6 +173,13 @@ def main():
         item_manager.draw()
         bullet_manager.draw()
         player.draw_weapon()
+
+        ui.draw(
+            player.health,
+            bullet_manager.ammo,
+            100 - bullet_manager.ammo
+        )
+
 
         pygame.display.flip()
 

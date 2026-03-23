@@ -12,6 +12,7 @@ class Player:
 
         self.weapon_offset = [0.4, -0.3, -0.6]
         self.weapon_scale = 1.4
+        self.health = 100
 
     def apply_camera(self):
         pitch, yaw = self.rotation
