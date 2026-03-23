@@ -97,6 +97,7 @@ def draw_ground():
     glBegin(GL_LINES)
     for i in range(-size, size):
 
+
         glVertex3f(i, 0, -size)
         glVertex3f(i, 0, size)
 
@@ -105,11 +106,13 @@ def draw_ground():
 
     glEnd()
 
+
     glEnable(GL_LIGHTING)
 
 
 def main():
     pygame.init()
+
 
     pygame.display.set_mode(
         (WIDTH, HEIGHT),
@@ -124,6 +127,10 @@ def main():
     item_manager = ItemManager()
     bullet_manager = BulletManager(default_weapon)
 
+    player = Player(default_weapon)
+    item_manager = ItemManager()
+    bullet_manager = BulletManager(default_weapon)
+
     clock = pygame.time.Clock()
 
     pygame.event.set_grab(True)
@@ -131,8 +138,26 @@ def main():
 
     last_spawn = time.time()
 
+    last_spawn = time.time()
+
     running = True
     while running:
+        dt = clock.tick(60) / 1000
+
+        now = time.time()
+
+        if now - last_spawn > SPAWN_INTERVAL:
+            weapon = random.choice(WEAPON_POOL)
+
+            x = random.uniform(-MAP_RANGE, MAP_RANGE)
+            z = random.uniform(-MAP_RANGE, MAP_RANGE)
+
+            item_manager.spawn_item(
+                weapon,
+                [x, 0.6, z]
+            )
+
+            last_spawn = now
         dt = clock.tick(60) / 1000
 
         now = time.time()
@@ -166,6 +191,12 @@ def main():
 
                     bullet_manager.shoot(pos, direction)
 
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    pos, direction = player.get_muzzle()
+
+                    bullet_manager.shoot(pos, direction)
+
         keys = pygame.key.get_pressed()
 
         speed = 0.1
@@ -180,12 +211,19 @@ def main():
         item_manager.update(player, bullet_manager)
         bullet_manager.update(dt)
 
+        item_manager.update(player, bullet_manager)
+        bullet_manager.update(dt)
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
 
         player.apply_camera()
 
+
         draw_ground()
+
+        item_manager.draw()
+        bullet_manager.draw()
 
         item_manager.draw()
         bullet_manager.draw()
