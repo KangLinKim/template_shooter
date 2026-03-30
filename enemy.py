@@ -17,14 +17,33 @@ class EnemyBulletManager:
                 position=pos,
                 direction=direction,
                 size=0.08,
-                damage=5,
+                damage=10,
                 color=(1,0,0)
             )
         )
 
-    def update(self, dt):
+    def update(self, player, dt):
+        remove = []
+
         for b in self.bullets:
             b.update(dt)
+
+            dx = b.position[0] - player.position[0]
+            dy = b.position[1] - player.position[1]
+            dz = b.position[2] - player.position[2]
+
+            dist = math.sqrt(dx*dx + dy*dy + dz*dz)
+
+            if dist < 0.6:
+                player.take_damage(b.damage)
+                remove.append(b)
+                continue
+
+            if b.life <= 0:
+                remove.append(b)
+
+        for b in remove:
+            self.bullets.remove(b)
 
     def draw(self):
         for b in self.bullets:
@@ -32,7 +51,7 @@ class EnemyBulletManager:
 
 
 class Enemy:
-    def __init__(self, position, fire_interval):
+    def __init__(self, position, fire_interval, hp=50):
         self.position = position
         self.model = Model("assets/player/enemy_cube.obj")
 
@@ -49,6 +68,15 @@ class Enemy:
             0,
             random.uniform(-1,1)
         ]
+
+        self.hp = hp
+        self.max_hp = hp
+        self.radius = 0.6
+
+    def take_damage(self, damage):
+        # print(f"Enemy took {damage} damage (HP: {self.hp} -> {self.hp - damage})")
+        self.hp -= damage
+        return self.hp <= 0
 
     def distance(self, player):
         dx = player.position[0] - self.position[0]
@@ -83,7 +111,6 @@ class Enemy:
         self.patrol_target = [x, z]
 
     def patrol(self):
-
         if self.patrol_target is None:
             self.new_patrol_target()
 
@@ -113,13 +140,11 @@ class Enemy:
             self.state = "patrol"
 
         if self.state == "attack":
-
             self.yaw = self.get_yaw_to_player(player)
 
             now = time.time()
 
             if now - self.last_fire > self.fire_interval:
-
                 direction = self.get_direction(player)
 
                 muzzle = [
@@ -142,7 +167,7 @@ class Enemy:
                 math.atan2(self.patrol_dir[0], -self.patrol_dir[2])
             )
 
-    def draw(self):
+    def draw(self, player):
         glPushMatrix()
 
         glTranslatef(
@@ -152,11 +177,52 @@ class Enemy:
         )
 
         glRotatef(self.yaw, 0,1,0)
-
         glColor3f(1,0,0)
-
         glScalef(1.2,1.2,1.2)
 
         self.model.draw()
+
+        glPopMatrix()
+
+        self.draw_hp_bar(player)
+
+    def draw_hp_bar(self, player):
+        x,y,z = self.position
+
+        hp_ratio = self.hp / self.max_hp
+
+        width = 1.2
+        height = 0.12
+
+        glPushMatrix()
+
+        glTranslatef(x, y + 1.6, z)
+        glRotatef(-player.rotation[1], 0,1,0)
+
+        glDisable(GL_DEPTH_TEST)
+
+        glColor3f(0.2,0.2,0.2)
+
+        glBegin(GL_QUADS)
+
+        glVertex3f(-width/2, 0, 0)
+        glVertex3f(width/2, 0, 0)
+        glVertex3f(width/2, height, 0)
+        glVertex3f(-width/2, height, 0)
+
+        glEnd()
+
+        glColor3f(0,1,0)
+
+        glBegin(GL_QUADS)
+
+        glVertex3f(-width/2, 0, 0.01)
+        glVertex3f(-width/2 + width*hp_ratio, 0, 0.01)
+        glVertex3f(-width/2 + width*hp_ratio, height, 0.01)
+        glVertex3f(-width/2, height, 0.01)
+
+        glEnd()
+
+        glEnable(GL_DEPTH_TEST)
 
         glPopMatrix()

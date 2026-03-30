@@ -12,8 +12,9 @@ class Bullet:
 
         self.size = size
         self.damage = damage
-
         self.color = color
+
+        self.radius = size
 
     def update(self, dt):
         self.position[0] += self.direction[0] * self.speed

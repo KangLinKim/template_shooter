@@ -14,6 +14,10 @@ class Player:
         self.weapon_scale = 1.4
         self.health = 100
 
+        self.hit_timer = 0
+        self.hit_duration = 0.25
+        self.dead = False
+
     def apply_camera(self):
         pitch, yaw = self.rotation
         x, y, z = self.position
@@ -59,13 +63,11 @@ class Player:
         glPopMatrix()
     
     def change_weapon(self, fbx_path):
-
         print("weapon changed:", fbx_path)
 
         self.weapon_model = Model(fbx_path)
 
     def get_forward_vector(self):
-
         yaw = math.radians(self.rotation[1])
 
         x = math.sin(yaw)
@@ -74,7 +76,6 @@ class Player:
         return [x, 0, z]
 
     def get_right_vector(self):
-
         yaw = math.radians(self.rotation[1])
 
         x = math.cos(yaw)
@@ -83,7 +84,6 @@ class Player:
         return [x, 0, z]
 
     def move(self, forward, right, speed):
-
         f = self.get_forward_vector()
         r = self.get_right_vector()
 
@@ -110,3 +110,58 @@ class Player:
         ]
 
         return position, direction
+    
+    def take_damage(self, damage):
+        if self.dead:
+            return
+
+        self.health -= damage
+        self.hit_timer = 0.25
+
+        # print("player hit:", self.health)
+
+        if self.health <= 0:
+            self.health = 0
+            self.dead = True
+            print("PLAYER DEAD")
+
+    def update(self, dt):
+        if self.hit_timer > 0:
+            self.hit_timer -= dt
+
+    def draw_hit_effect(self, width, height):
+        if self.hit_timer <= 0:
+            return
+
+        alpha = self.hit_timer / self.hit_duration
+
+        glDisable(GL_DEPTH_TEST)
+
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+        glOrtho(0, width, 0, height, -1, 1)
+
+        glMatrixMode(GL_MODELVIEW)
+        glPushMatrix()
+        glLoadIdentity()
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+        glColor4f(1, 0, 0, 0.35 * alpha)
+
+        glBegin(GL_QUADS)
+        glVertex2f(0, 0)
+        glVertex2f(width, 0)
+        glVertex2f(width, height)
+        glVertex2f(0, height)
+        glEnd()
+
+        glPopMatrix()
+
+        glMatrixMode(GL_PROJECTION)
+        glPopMatrix()
+
+        glMatrixMode(GL_MODELVIEW)
+
+        glEnable(GL_DEPTH_TEST)

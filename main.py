@@ -94,11 +94,7 @@ def main():
                     "assets/UI/Heart.png",
                     "assets/UI/Ammo.png",
                     "assets/UI/Cross.png",)
-    # enemy_manager = EnemyManager()
-
-    # enemy_manager.spawn([5,0,5], 1.2)
-    # enemy_manager.spawn([-6,0,4], 0.8)
-    # enemy_manager.spawn([0,0,-6], 1.5)
+    
     enemy_manager = EnemyManager(
         spawn_interval=6,
         min_radius=8,
@@ -181,12 +177,13 @@ def main():
 
         draw_ground()
 
-
         item_manager.draw()
         bullet_manager.draw()
-        enemy_manager.update(player, dt)
-        enemy_manager.draw()
+        enemy_manager.update(player, bullet_manager, dt)
+        enemy_manager.draw(player)
         player.draw_weapon()
+
+        player.update(dt)
 
         ui.draw(
             player.health,
@@ -194,7 +191,13 @@ def main():
             100 - bullet_manager.ammo
         )
 
+        player.draw_hit_effect(WIDTH, HEIGHT)
+
         pygame.display.flip()
+
+        if player.dead:
+            print("GAME OVER")
+            running = False
 
     pygame.quit()
 
