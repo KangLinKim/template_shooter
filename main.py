@@ -21,7 +21,7 @@ HEIGHT = 720
 SPAWN_INTERVAL = 5
 MAP_RANGE = 15
 
-default_weapon = "assets/player/Pistol_K.fbx"
+default_weapon = "assets/player/Pistol_K.obj"
 
 
 def init_opengl():

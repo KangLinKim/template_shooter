@@ -1,4 +1,4 @@
-CAPTION = "휴몬랩코딩 FPS 2주차"
+CAPTION = "휴몬랩코딩 FPS 3주차"
 
 
 WEAPON_DATA = {
@@ -27,7 +27,7 @@ WEAPON_DATA = {
 
 
 WEAPON_POOL = [
-    "assets/player/ShotGun_I.fbx",
-    "assets/player/SMG_G.fbx",
-    "assets/player/Pistol_M.fbx"
+    "assets/player/ShotGun_I.obj",
+    "assets/player/SMG_G.obj",
+    "assets/player/Pistol_M.obj"
 ]
