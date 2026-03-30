@@ -94,9 +94,9 @@ class UI:
 
         glEnd()
 
-    def draw_crosshair(self):
+    def draw_crosshair(self, player):
         cx = self.width / 2
-        cy = self.height / 2
+        cy = self.height / 2 + player.walk_bob * 400
 
         glDisable(GL_TEXTURE_2D)
 
@@ -107,7 +107,7 @@ class UI:
         self.draw_circle(cx, cy, 18)
         glColor3f(1,1,1)
     
-    def draw(self, health, ammo, score):
+    def draw(self, player, ammo, score):
         glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT)
 
         glMatrixMode(GL_PROJECTION)
@@ -131,7 +131,7 @@ class UI:
         margin = 20
         spacing = 10
 
-        for i in range(int(health/10)):
+        for i in range(int(player.health/10)):
             x = self.width - margin - size - i * (size + spacing)
             y = margin
 
@@ -143,7 +143,7 @@ class UI:
 
             self.draw_texture(self.bullet_tex, x, y, size, size)
 
-        self.draw_crosshair()
+        self.draw_crosshair(player)
         
         glPopMatrix()
 

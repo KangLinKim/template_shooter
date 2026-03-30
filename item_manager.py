@@ -1,6 +1,6 @@
 import math
 import time
-
+import random
 from OpenGL.GL import *
 
 from model import Model
@@ -54,8 +54,16 @@ class Item:
 
 
 class ItemManager:
-    def __init__(self):
+    def __init__(self, item_pool=[]):
         self.items = []
+        self.item_pool = item_pool
+
+    def random_spawn(self, position):
+        if not self.item_pool:
+            return
+
+        model_path = random.choice(self.item_pool)
+        self.spawn_item(model_path, position)
 
     def spawn_item(self, model_path, position):
         item = Item(model_path, position)

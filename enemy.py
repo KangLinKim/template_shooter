@@ -5,6 +5,7 @@ from OpenGL.GL import *
 
 from model import Model
 from bullet import Bullet
+from particle import DeathParticle
 
         
 class EnemyBulletManager:
@@ -73,10 +74,32 @@ class Enemy:
         self.max_hp = hp
         self.radius = 0.6
 
+        self.dead = False
+        self.death_timer = 0
+        self.death_rot = 0
+
+        self.particles = []
+
+        self.drop_item = False
+
     def take_damage(self, damage):
-        # print(f"Enemy took {damage} damage (HP: {self.hp} -> {self.hp - damage})")
+        if self.dead:
+            return False
+
         self.hp -= damage
-        return self.hp <= 0
+
+        if self.hp <= 0:
+            self.hp = 0
+            self.dead = True
+
+            for _ in range(20):
+                self.particles.append(
+                    DeathParticle(self.position)
+                )
+
+            return True
+
+        return False
 
     def distance(self, player):
         dx = player.position[0] - self.position[0]
@@ -131,7 +154,27 @@ class Enemy:
         self.position[0] += dx * self.patrol_speed
         self.position[2] += dz * self.patrol_speed
 
-    def update(self, player, bullet_manager):
+    def update(self, player, bullet_manager, dt):
+        if self.dead:
+            self.death_timer += dt
+
+            if self.death_rot < 90:
+                self.death_rot += dt * 160
+
+            self.position[1] -= dt * 0.5
+
+            remove = []
+
+            for p in self.particles:
+                p.update(dt)
+                if p.life <= 0:
+                    remove.append(p)
+
+            for p in remove:
+                self.particles.remove(p)
+
+            return
+        
         dist = self.distance(player)
 
         if dist < self.detect_radius:
@@ -176,7 +219,11 @@ class Enemy:
             self.position[2]
         )
 
-        glRotatef(self.yaw, 0,1,0)
+        glRotatef(self.yaw,0,1,0)
+
+        if self.dead:
+            glRotatef(self.death_rot,0,0,1)
+
         glColor3f(1,0,0)
         glScalef(1.2,1.2,1.2)
 
@@ -184,7 +231,11 @@ class Enemy:
 
         glPopMatrix()
 
-        self.draw_hp_bar(player)
+        for p in self.particles:
+            p.draw(player)
+
+        if not self.dead:
+            self.draw_hp_bar(player)
 
     def draw_hp_bar(self, player):
         x,y,z = self.position

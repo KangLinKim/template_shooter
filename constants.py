@@ -1,4 +1,4 @@
-CAPTION = "휴몬랩코딩 FPS 5주차"
+CAPTION = "휴몬랩코딩 FPS 6주차"
 
 
 WEAPON_DATA = {

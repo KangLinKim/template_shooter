@@ -18,6 +18,10 @@ class Player:
         self.hit_duration = 0.25
         self.dead = False
 
+        self.walk_time = 0.0
+        self.walk_bob = 0.0
+        self.walking = False
+
     def apply_camera(self):
         pitch, yaw = self.rotation
         x, y, z = self.position
@@ -43,9 +47,11 @@ class Player:
         glPushMatrix()
         glLoadIdentity()
 
+        bob = self.walk_bob
+
         glTranslatef(
             self.weapon_offset[0],
-            self.weapon_offset[1],
+            self.weapon_offset[1] + bob,
             self.weapon_offset[2]
         )
 
@@ -87,11 +93,18 @@ class Player:
         f = self.get_forward_vector()
         r = self.get_right_vector()
 
-        self.position[0] += (f[0] * forward + r[0] * right) * speed
-        self.position[2] += (f[2] * forward + r[2] * right) * speed
+        move_x = (f[0] * forward + r[0] * right) * speed
+        move_z = (f[2] * forward + r[2] * right) * speed
+
+        self.position[0] += move_x
+        self.position[2] += move_z
+
+        if abs(move_x) > 0.0001 or abs(move_z) > 0.0001:
+            self.walking = True
+        else:
+            self.walking = False
 
     def get_muzzle(self):
-
         yaw = math.radians(self.rotation[1])
         pitch = math.radians(self.rotation[0])
 
@@ -101,12 +114,17 @@ class Player:
             -math.cos(yaw) * math.cos(pitch)
         ]
 
-        muzzle_distance = 1.0
+        muzzle_distance = 0.2
+
+        ox, oy, oz = self.weapon_offset
+
+        offset_x = ox * math.cos(yaw) - oz * math.sin(yaw)
+        offset_z = ox * math.sin(yaw) + oz * math.cos(yaw)
 
         position = [
-            self.position[0] + direction[0] * muzzle_distance,
-            self.position[1] + direction[1] * muzzle_distance - 0.3,
-            self.position[2] + direction[2] * muzzle_distance
+            self.position[0] + direction[0] * muzzle_distance + offset_x,
+            self.position[1] + direction[1] * muzzle_distance + oy,
+            self.position[2] + direction[2] * muzzle_distance + offset_z
         ]
 
         return position, direction
@@ -128,6 +146,12 @@ class Player:
     def update(self, dt):
         if self.hit_timer > 0:
             self.hit_timer -= dt
+
+        if self.walking:
+            self.walk_time += dt * 8
+            self.walk_bob = math.sin(self.walk_time) * 0.03
+        else:
+            self.walk_bob *= 0.8
 
     def draw_hit_effect(self, width, height):
         if self.hit_timer <= 0:

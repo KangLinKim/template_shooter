@@ -7,6 +7,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+from game_manger import GameManager
 from enemy_manager import EnemyManager
 from player import Player
 from constants import *
@@ -88,17 +89,19 @@ def main():
     init_opengl()
 
     player = Player(default_weapon)
-    item_manager = ItemManager()
+    item_manager = ItemManager(item_pool=WEAPON_POOL)
     bullet_manager = BulletManager(default_weapon)
     ui = UI(WIDTH, HEIGHT,
                     "assets/UI/Heart.png",
                     "assets/UI/Ammo.png",
                     "assets/UI/Cross.png",)
-    
+
+    game_manager = GameManager()
     enemy_manager = EnemyManager(
         spawn_interval=6,
         min_radius=8,
-        max_radius=18
+        max_radius=18,
+        game_manager=game_manager,
     )
 
     clock = pygame.time.Clock()
@@ -115,15 +118,10 @@ def main():
         now = time.time()
 
         if now - last_spawn > SPAWN_INTERVAL:
-            weapon = random.choice(WEAPON_POOL)
-
             x = random.uniform(-MAP_RANGE, MAP_RANGE)
             z = random.uniform(-MAP_RANGE, MAP_RANGE)
 
-            item_manager.spawn_item(
-                weapon,
-                [x, 0.6, z]
-            )
+            item_manager.random_spawn([x, 0.6, z])
 
             last_spawn = now
 
@@ -178,17 +176,17 @@ def main():
         draw_ground()
 
         item_manager.draw()
-        bullet_manager.draw()
-        enemy_manager.update(player, bullet_manager, dt)
+        bullet_manager.draw(player)
+        enemy_manager.update(player, bullet_manager, item_manager, dt)
         enemy_manager.draw(player)
         player.draw_weapon()
 
         player.update(dt)
 
         ui.draw(
-            player.health,
+            player,
             bullet_manager.ammo,
-            100 - bullet_manager.ammo
+            game_manager.score,
         )
 
         player.draw_hit_effect(WIDTH, HEIGHT)
