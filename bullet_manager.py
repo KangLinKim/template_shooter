@@ -1,10 +1,8 @@
-from bullet import Bullet
-
-
 import time
 import os
 from bullet import Bullet
 from constants import WEAPON_DATA
+
 
 class BulletManager:
     def __init__(self, weapon_path):
@@ -33,7 +31,7 @@ class BulletManager:
             print("Out of ammo")
             return
 
-        bullet = Bullet(position, direction, self.bullet_size, self.bullet_damage)
+        bullet = Bullet(position, direction, self.bullet_size, self.bullet_damage, (1, 0.8, 0.2))
         self.bullets.append(bullet)
         self.ammo -= 1
         self.last_shot_time = now

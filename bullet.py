@@ -3,14 +3,17 @@ from OpenGL.GL import *
 
 
 class Bullet:
-    def __init__(self, position, direction, size, damage):
+    def __init__(self, position, direction, size, damage, color):
         self.position = list(position)
         self.direction = direction
 
         self.speed = 0.8
         self.life = 3.0
+
         self.size = size
         self.damage = damage
+
+        self.color = color
 
     def update(self, dt):
         self.position[0] += self.direction[0] * self.speed
@@ -25,9 +28,9 @@ class Bullet:
         glPushMatrix()
 
         glTranslatef(x, y, z)
-        glScalef(0.08, 0.08, 0.2)
+        glScalef(self.size, self.size, self.size)
 
-        glColor3f(1, 0.8, 0.2)
+        glColor3f(*self.color)
 
         glBegin(GL_QUADS)
 

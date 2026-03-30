@@ -7,6 +7,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+from enemy_manager import EnemyManager
 from player import Player
 from constants import *
 
@@ -93,6 +94,16 @@ def main():
                     "assets/UI/Heart.png",
                     "assets/UI/Ammo.png",
                     "assets/UI/Cross.png",)
+    # enemy_manager = EnemyManager()
+
+    # enemy_manager.spawn([5,0,5], 1.2)
+    # enemy_manager.spawn([-6,0,4], 0.8)
+    # enemy_manager.spawn([0,0,-6], 1.5)
+    enemy_manager = EnemyManager(
+        spawn_interval=6,
+        min_radius=8,
+        max_radius=18
+    )
 
     clock = pygame.time.Clock()
 
@@ -170,8 +181,11 @@ def main():
 
         draw_ground()
 
+
         item_manager.draw()
         bullet_manager.draw()
+        enemy_manager.update(player, dt)
+        enemy_manager.draw()
         player.draw_weapon()
 
         ui.draw(
@@ -179,7 +193,6 @@ def main():
             bullet_manager.ammo,
             100 - bullet_manager.ammo
         )
-
 
         pygame.display.flip()
 
