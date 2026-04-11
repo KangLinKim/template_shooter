@@ -1,5 +1,4 @@
 import numpy as np
-import pyassimp
 import os
 
 from OpenGL.GL import *
