@@ -1,5 +1,4 @@
 import numpy as np
-import pyassimp
 import os
 
 from OpenGL.GL import *
@@ -41,39 +40,64 @@ class Model:
     def __init__(self, path):
         self.meshes = []
 
-        file_type = os.path.basename(path)
-        if file_type.startswith("SMG"):
-            unload_index = 4
+        vertices, normals = self.load_obj(path)
+        self.meshes = [
+            MeshVBO(vertices, normals)
+        ]
 
-        elif file_type.startswith("ShotGun"):
-            unload_index = None
+    def load_obj(self, path):
+        vertices_raw = []
+        normals_raw = []
 
-        elif file_type.startswith("Pistol"):
-            unload_index = 2
+        vertices = []
+        normals = []
 
-        with pyassimp.load(path) as scene:
-            for mesh_idx, mesh in enumerate(scene.meshes):
-                if mesh_idx != unload_index:
-                    vertices = []
-                    normals = []
+        with open(path, "r", encoding="latin1") as f:
+            for line in f:
+                if line.startswith("v "):
+                    x, y, z = map(float, line.split()[1:4])
+                    vertices_raw.append([x, y, z])
 
-                    for face in mesh.faces:
-                        if len(face) != 3:
-                            continue
+                elif line.startswith("vn "):
+                    x, y, z = map(float, line.split()[1:4])
+                    normals_raw.append([x, y, z])
 
-                        for index in face:
-                            v = mesh.vertices[index]
-                            vertices.append(v)
+                elif line.startswith("f "):
+                    parts = line.split()[1:]
 
-                            if mesh.normals is not None:
-                                normals.append(mesh.normals[index])
+                    triangles = []
+                    for i in range(1, len(parts)-1):
+                        triangles.append(parts[0])
+                        triangles.append(parts[i])
+                        triangles.append(parts[i+1])
 
+                    for p in triangles:
+                        vals = p.split("/")
+
+                        v_idx = int(vals[0])
+                        if v_idx < 0:
+                            v_idx = len(vertices_raw) + v_idx
+
+                        else:
+                            v_idx -= 1
+
+                        vertices.append(vertices_raw[v_idx])
+
+                        if len(vals) >= 3 and vals[2] != "" and normals_raw:
+                            n_idx = int(vals[2])
+                            if n_idx < 0:
+                                n_idx = len(normals_raw) + n_idx
+                                
                             else:
-                                normals.append([0, 1, 0])
+                                n_idx -= 1
 
-                    self.meshes.append(
-                        MeshVBO(vertices, normals)
-                    )
+                            normals.append(normals_raw[n_idx])
+
+                        else:
+                            normals.append([0,1,0])
+
+        return vertices, normals
+    
 
     def draw(self):
         glMaterialfv(GL_FRONT, GL_SPECULAR, [1, 1, 1, 1])
