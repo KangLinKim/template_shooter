@@ -5,7 +5,6 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 from player import Player
-from constants import *
 
 """
 문제
@@ -14,7 +13,6 @@ from constants import *
 3. 총은 assets/player 폴더에 저장되어있습니다.
     이 중에서 원하는 fbx파일을 Player 클래스의 생성자에 전달하여 무기를 불러와보세요.
 """
-
 
 def init_opengl():
     glViewport(0, 0, WIDTH, HEIGHT)
