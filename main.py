@@ -25,6 +25,26 @@ MAP_RANGE = 15
 default_weapon = "assets/player/Pistol_K.obj"
 
 
+"""
+문제
+
+1. 이제 Enemy를 만들 차례입니다. 아래의 요구사항에 맞춰 Enemy를 생성해주세요.
+    enemy_manager라는 변수에 EnemyManager 클래스를 할당해주세요.
+    해당 클래스는 enemy_manager.py 파일에 작성되어있습니다.
+
+    1.1. spawn_interval은 숫자 2개 사이의 랜덤한 값으로 지정하고자 합니다.
+        이를 위해 "최소 스폰 시간과 최대 스폰 시간" 숫자 2개로 구성된 tuple로 넣어주세요.
+    1.2. 8과 20 사이의 수 중에 가장 작은 소수를 구하고, 이를 min_radius에 넣어주세요.
+    1.3. 9와 30 사이의 수 중에 약수가 홀수인 가장 큰 수를 구하고, 이를 max_radius에 넣어주세요.
+    
+2. enemy_manager.py파일에서 이제 spawn을 코드를 작성할 차례입니다.
+    파일을 열고 33 ~ 36번에 해당하는 문제를 풀어주세요.
+    
+3. enemy.py에서 거리를 구하는 공식을 작성해야합니다.
+    파일을 열고 53 ~ 58번줄에 해당하는 cal_dist라는 함수를 작성해주세요.
+"""
+
+
 def init_opengl():
     glViewport(0, 0, WIDTH, HEIGHT)
 
@@ -99,11 +119,6 @@ def main():
     # enemy_manager.spawn([5,0,5], 1.2)
     # enemy_manager.spawn([-6,0,4], 0.8)
     # enemy_manager.spawn([0,0,-6], 1.5)
-    enemy_manager = EnemyManager(
-        spawn_interval=6,
-        min_radius=8,
-        max_radius=18
-    )
 
     clock = pygame.time.Clock()
 

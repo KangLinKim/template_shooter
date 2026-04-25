@@ -50,6 +50,14 @@ class Enemy:
             random.uniform(-1,1)
         ]
 
+        self.cal_dist(0, 0, 5, 5)
+
+    def cal_dist(a_x, a_y, b_x, b_y):
+        """
+        a_x, a_y, b_x, b_y가 주어졌을 때 a와 b의 거리를 계산해주세요.
+        """
+        return calculated_distance
+
     def distance(self, player):
         dx = player.position[0] - self.position[0]
         dz = player.position[2] - self.position[2]
@@ -66,14 +74,12 @@ class Enemy:
         return [dx/l, dy/l, dz/l]
     
     def get_yaw_to_player(self, player):
-
         dx = player.position[0] - self.position[0]
         dz = player.position[2] - self.position[2]
 
         return math.degrees(math.atan2(dx, -dz))
 
     def new_patrol_target(self):
-
         angle = random.uniform(0, math.pi*2)
         radius = random.uniform(2,6)
 
@@ -83,7 +89,6 @@ class Enemy:
         self.patrol_target = [x, z]
 
     def patrol(self):
-
         if self.patrol_target is None:
             self.new_patrol_target()
 
@@ -109,17 +114,16 @@ class Enemy:
 
         if dist < self.detect_radius:
             self.state = "attack"
+            
         else:
             self.state = "patrol"
 
         if self.state == "attack":
-
             self.yaw = self.get_yaw_to_player(player)
 
             now = time.time()
 
             if now - self.last_fire > self.fire_interval:
-
                 direction = self.get_direction(player)
 
                 muzzle = [
@@ -152,9 +156,7 @@ class Enemy:
         )
 
         glRotatef(self.yaw, 0,1,0)
-
         glColor3f(1,0,0)
-
         glScalef(1.2,1.2,1.2)
 
         self.model.draw()
