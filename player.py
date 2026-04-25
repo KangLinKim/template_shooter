@@ -12,11 +12,13 @@ class Player:
 
         self.weapon_offset = [0.4, -0.3, -0.6]
         self.weapon_scale = 1.4
-        self.health = 100
 
         self.hit_timer = 0
         self.hit_duration = 0.25
-        self.dead = False
+        """
+        dead라는 이름의 self변수를 만들고, 초기값을 False로 할당해주세요.
+        health라는 이름의 self변수를 만들고, 초기값을 100으로 할당해주세요.
+        """
 
     def apply_camera(self):
         pitch, yaw = self.rotation
@@ -112,28 +114,30 @@ class Player:
         return position, direction
     
     def take_damage(self, damage):
-        if self.dead:
-            return
+        """
+        2.2. self.dead 변수가 True라면 함수를 바로 종료해주세요.
+        """
 
         self.health -= damage
         self.hit_timer = 0.25
 
         # print("player hit:", self.health)
-
-        if self.health <= 0:
-            self.health = 0
-            self.dead = True
-            print("PLAYER DEAD")
+            
+        """
+        2.3. self.health가 0보다 작을 경우, 아래의 코드를 작성해주세요.
+            - self.health를 0으로 초기화해주세요.
+            - self.dead를 True로 수정해주세요.
+            - 플레이어가 사망했다는 문구를 출력해주세요.
+        """
 
     def update(self, dt):
         if self.hit_timer > 0:
             self.hit_timer -= dt
 
     def draw_hit_effect(self, width, height):
-        if self.hit_timer <= 0:
-            return
-
-        alpha = self.hit_timer / self.hit_duration
+        """
+        2.4. 클래스의 hit_timer 변수가 0 이하라면, 함수를 종료해주세요.
+        """
 
         glDisable(GL_DEPTH_TEST)
 
@@ -148,7 +152,17 @@ class Player:
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        glColor4f(1, 0, 0, 0.35 * alpha)
+        """
+        2.5. glColor4f라는 함수를 사용해, 화면을 붉게 만드려 합니다.
+            아래의 요구사항을 따라 코드를 작성해주세요.
+            
+            glColor4f는 R, G, B, A라는 4개의 매개변수를 순서대로 받습니다.
+            R, G, B에 원하는 색상을 0~1사이로 하나씩 넣어주세요.
+            
+            해당 클래스에는 피격 시간을 측정하는 변수와, 피격 효과를 유지하는 변수 2가지가 있습니다.
+            (시간 측정 변수 / 유지 변수) * 0.35를 A에 넣어주세요.
+            - 힌트: "hit"이라는 이름으로 시작하는 변수임        
+        """
 
         glBegin(GL_QUADS)
         glVertex2f(0, 0)

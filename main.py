@@ -25,6 +25,27 @@ MAP_RANGE = 15
 default_weapon = "assets/player/Pistol_K.obj"
 
 
+"""
+문제
+
+1. 이제 체력을 구현할 차례입니다.
+    enemy.py파일에서 문제를 해결해주세요.
+    1.1. 77 ~ 81
+    
+2. player.py파일에서 문제를 해결해주세요.
+    2.1. 18 ~ 21
+    2.2. 117 ~ 119
+    2.3. 126 ~ 130
+    2.4. 138 ~ 140
+    2.5. 155 ~ 166
+
+3. main함수의 while 반복문은 running이라는 변수가 True일 때 작동됩니다.
+    player가 사망했는지 확인하는 변수를 main함수에서 확인하고, False라면 반복문이 종료되도록 해주세요.
+    
+    216번 줄에 작성해주세요.
+"""
+
+
 def init_opengl():
     glViewport(0, 0, WIDTH, HEIGHT)
 
@@ -194,10 +215,7 @@ def main():
         player.draw_hit_effect(WIDTH, HEIGHT)
 
         pygame.display.flip()
-
-        if player.dead:
-            print("GAME OVER")
-            running = False
+        
 
     pygame.quit()
 

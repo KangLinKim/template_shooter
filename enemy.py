@@ -74,9 +74,12 @@ class Enemy:
         self.radius = 0.6
 
     def take_damage(self, damage):
-        # print(f"Enemy took {damage} damage (HP: {self.hp} -> {self.hp - damage})")
-        self.hp -= damage
-        return self.hp <= 0
+        """
+        피격 함수를 구현해야합니다.
+        damage만큼 Enemy의 hp를 감소시켜주고,
+        hp가 0 이상이라면 False, 아니라면 True를 반환해주세요.
+        """
+        
 
     def distance(self, player):
         dx = player.position[0] - self.position[0]
@@ -94,14 +97,12 @@ class Enemy:
         return [dx/l, dy/l, dz/l]
     
     def get_yaw_to_player(self, player):
-
         dx = player.position[0] - self.position[0]
         dz = player.position[2] - self.position[2]
 
         return math.degrees(math.atan2(dx, -dz))
 
     def new_patrol_target(self):
-
         angle = random.uniform(0, math.pi*2)
         radius = random.uniform(2,6)
 
