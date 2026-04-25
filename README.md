@@ -3,6 +3,12 @@
 dlls\assimp-vc143-mt.dll
 위의 파일 아래와 같은 파이썬 경로에 붙여넣기
 C:\Users\user\AppData\Local\Programs\Python\Python312
+# 실행 방법
+- 아래의 코드 실행하기
+```
+python -m pip install pygame pyopengl pyopengl_accelerate numpy 
+```
+
 
 
 # 커리큘럼
