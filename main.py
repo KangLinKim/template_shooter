@@ -25,6 +25,28 @@ MAP_RANGE = 15
 
 default_weapon = "assets/player/Pistol_K.obj"
 
+"""
+문제
+
+1. GamaManager를 통해 점수를 관리하려 합니다.
+    아래의 요건에 맞춰 game_manger.py에서 클래스를 완성해주세요.
+    - 초기 score는 0점
+    - earn_score 함수를 통해 점수를 획득할 수 있습니다.
+        해당 함수는 획득한 점수만큼 score에 더해주는 역할을 합니다.
+
+2. Particle 시스템을 구현하려 합니다.
+    아래의 요건에 맞춰 particle.py에서 클래스를 완성해주세요.
+
+3. 이제 프로젝트를 마무리 할 차례입니다.
+    summary함수를 아래와 같은 요소를 반환하도록 작성해주세요.
+    - 총 플레이 시간
+    - 최종 점수
+    - 플레이어 생존 여부
+
+    score가 100점 이상이라면 "You Win!", 아니라면 "Game Over!"를 출력해주세요.
+    summary함수를 코드 종료 시 호출해주세요.
+"""
+
 
 def init_opengl():
     glViewport(0, 0, WIDTH, HEIGHT)
