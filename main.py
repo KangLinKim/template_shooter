@@ -50,7 +50,6 @@ default_weapon = "assets/player/Pistol_K.fbx"
     - player의 체력은 player클래스의 health변수로 작성되어 있습니다.
     - 총알 수는 bullet_manager의 ammo변수로 작성되어 있습니다.
     - 점수는 100점으로 작성해주세요.
-    
 """
 
 
