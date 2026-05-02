@@ -38,18 +38,19 @@ default_weapon = "assets/player/Pistol_K.fbx"
 2.2. 추가하는 함수를 사용해 하나씩 넣어주세요.
 2.3. for문을 사용해서 UIs에 있는 모든 key와 value를 출력해주세요.
 
-3. 이제 UI를 그려야합니다. 아래의 지시를 따라 ui클래스를 작성해주세요.
+3. 이제 UI를 그려야합니다. 아래의 지시를 따라 ui클래스를 작성해주세요.(122 ~ 124번 줄)
     - ui파일의 UI클래스를 가져와주세요.
     - ui라는 변수로 UI클래스의 인스턴스를 생성해주세요.
     - UI클래스의 생성자에는 화면의 너비, 높이, 그리고 UIs에 저장된 이미지 경로들을 넣어주세요.
 
     - ui클래스의 생성사는 ui.py에 서술되어 있습니다.
 
-4. UI클래스의 draw함수를 사용해서 화면에 UI를 그려주세요.
+4. UI클래스의 draw함수를 사용해서 화면에 UI를 그려주세요.(206 ~ 208번 줄)
     - draw함수의 매개변수로 플레이어의 체력, 총알 수, 그리고 점수를 넣어주세요.
     - player의 체력은 player클래스의 health변수로 작성되어 있습니다.
     - 총알 수는 bullet_manager의 ammo변수로 작성되어 있습니다.
     - 점수는 100점으로 작성해주세요.
+    
 """
 
 
@@ -118,6 +119,9 @@ def main():
     player = Player(default_weapon)
     item_manager = ItemManager()
     bullet_manager = BulletManager(default_weapon)
+    """
+    3번 문제
+    """
 
     clock = pygame.time.Clock()
 
@@ -198,6 +202,10 @@ def main():
         item_manager.draw()
         bullet_manager.draw()
         player.draw_weapon()
+        
+        """
+        4번 문제
+        """
 
         pygame.display.flip()
 
